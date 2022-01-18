@@ -25,12 +25,13 @@ const char * MyString::c_str(){
 	//TODO Alix
 }
 
-size_t MyString::size(){
+size_t MyString::size() const{
 	//TODO Alix
 }
 
-size_t MyString::length(){
+size_t MyString::length() const{
 	//TODO Léa
+	return 5;//A enlever quand tu coderas.
 }
 
 size_t MyString::capacity(){
@@ -64,32 +65,63 @@ void MyString::reserve(size_t n){
 		char * to_be_deleted = _char_array;
 		_char_array = new_array;
 		delete to_be_deleted;
+		_alloc_size = n;
 	}
 	else{
 		//Throw Error
+		std::cout << "You're trying to allocate a lower amount of memory than the amount needed to store the current string" << std::endl;
 	}
 }
 
-MyString& MyString::operator=(const std::string& str){
+MyString& MyString::operator=(const MyString& str){
 	//TODO Léa
 }
 
 MyString& MyString::operator=(const char * str){
 	//TODO Lucas
+	int new_str_size = 0;
+	while(str[new_str_size]!='\0') new_str_size++;
+	if(_alloc_size < new_str_size + 1){
+		int target_alloc = _alloc_size;
+		do{
+			target_alloc*=2;
+		}while(target_alloc<new_str_size+1);
+		reserve(target_alloc);
+	}
+	for(int i=0; i<new_str_size;i++){
+		_char_array[i] = str[i];
+	}
+	_char_array[new_str_size] = '\0';
 }
 
 MyString& MyString::operator=(const char str){
 	//TODO Alix
 }
 
-MyString& MyString::operator+(const std::string& str){
+MyString MyString::operator+(const MyString& str){
 	//TODO Lucas
+	MyString temp;
+	int current_length = length();
+	int target_length = current_length + str.length();
+	int target_alloc = _alloc_size;
+	do{
+			target_alloc*=2;
+	}while(target_alloc<target_length+1);
+	temp.reserve(target_alloc);
+	for(int i=0; i<current_length;i++){
+		temp._char_array[i] = _char_array[i];
+	}
+	for(int i=current_length; i<target_length;i++){
+		temp._char_array[i] = str._char_array[i-current_length];
+	}
+	temp._char_array[target_length] = '\0';
+	return temp;
 }
 
-MyString& MyString::operator+(const char * str){
+MyString MyString::operator+(const char * str){
 	//TODO Alix
 }
 
-MyString& MyString::operator+(const char str){
+MyString MyString::operator+(const char str){
 	//TODO Léa
 }
