@@ -142,4 +142,9 @@ MyString MyString::operator+(const char * str){
 
 MyString MyString::operator+(const char str){
 	//TODO Léa
+	if (_alloc_size < length()+1) {
+		reserve(length()+1);
+	}
+	_char_array[length()] = str;
+	_char_array[length()+1] = '\0';
 }
