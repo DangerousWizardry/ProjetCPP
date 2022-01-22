@@ -10,6 +10,14 @@ MyString::MyString(){
 
 MyString::MyString(char * char_array){
 	//TODO Léa
+	int len = 0;
+	while(char_array[len]!='\0') len++;
+	reserve(len);
+	_alloc_size=capacity();
+	_max_size=100;
+	for (int i = 0; i<len+1 ; i++){
+		_char_array[i]=char_array[i];
+	}
 }
 
 MyString::~MyString(){
