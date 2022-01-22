@@ -31,7 +31,11 @@ size_t MyString::size() const{
 
 size_t MyString::length() const{
 	//TODO Léa
-	return 5;//A enlever quand tu coderas.
+	int len = 0;
+	while (_char_array[len]!='\0'){
+		len++;
+	}
+	return len;
 }
 
 size_t MyString::capacity(){
@@ -40,6 +44,7 @@ size_t MyString::capacity(){
 
 size_t MyString::max_size(){
 	//TODO Léa
+	return _max_size;
 }
 
 void MyString::clear(){
@@ -52,6 +57,13 @@ bool MyString::empty(){
 
 void MyString::resize(int new_size, char c){
 	//TODO Léa
+	int str_size = this->length();
+	reserve(new_size);
+	if (new_size>str_size){
+		for (int i=str_size; i<new_size+1 ; i++){
+			_char_array[i] = c;
+		}
+	}
 }
 
 void MyString::reserve(size_t n){
@@ -75,6 +87,12 @@ void MyString::reserve(size_t n){
 
 MyString& MyString::operator=(const MyString& str){
 	//TODO Léa
+	int len = str.length();
+	reserve(str._alloc_size); //reserve(len)   ???
+	for (int i=0; i<len+1; i++){
+		_char_array[i] = str._char_array[i];
+	} //return _char_array ?? ou alors c'est pas obligé vu que c'est un objet de type MyString
+	//return *this; ???
 }
 
 MyString& MyString::operator=(const char * str){
