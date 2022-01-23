@@ -27,14 +27,29 @@ MyString::~MyString(){
 
 MyString::MyString(const MyString& string_to_copy){
 	//TODO Alix
+	int len = string_to_copy.length();
+	_char_array = new char[len+1];
+	for (int i = 0; i<len+1; i++){
+	    _char_array[i]=string_to_copy[i];
+	}
+	_char_array[len]='\0';
 }
 
 const char * MyString::c_str(){
 	//TODO Alix
+    char* result = new char[this->length() + 1];
+    result(this);  //ça je sais pas comment faire 
+    result[this->length()] = '\0';
+    return result;
 }
 
 size_t MyString::size() const{
 	//TODO Alix
+	int len = 0;
+	while (_char_array[len]!='\0'){
+		len++;
+	}
+	return len;
 }
 
 size_t MyString::length() const{
@@ -57,6 +72,7 @@ size_t MyString::max_size(){
 
 void MyString::clear(){
 	//TODO Alix
+	_char_array[0]= '\0';
 }
 
 bool MyString::empty(){
@@ -122,6 +138,8 @@ MyString& MyString::operator=(const char * str){
 
 MyString& MyString::operator=(const char str){
 	//TODO Alix
+    _char_array[0]=str;
+	_char_array[1]='\0';
 }
 
 MyString MyString::operator+(const MyString& str){
@@ -146,6 +164,22 @@ MyString MyString::operator+(const MyString& str){
 
 MyString MyString::operator+(const char * str){
 	//TODO Alix
+	int str_size = 0;
+	while(str[str_size]!='\0') {
+	    str_size++;
+	}
+	int new_size = this->length() + str_size ;
+	if(_alloc_size < new_size + 1){
+		int target_alloc = _alloc_size;
+		do{
+			target_alloc*=2;
+		}while(target_alloc < new_size + 1);
+		reserve(target_alloc);
+	}
+	for(int i=this->length(); i<new_size; i++){
+		_char_array[i] = str[i];
+	}
+	_char_array[new_size] = '\0';
 }
 
 MyString MyString::operator+(const char str){
