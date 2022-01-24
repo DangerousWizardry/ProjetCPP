@@ -37,19 +37,17 @@ MyString::MyString(const MyString& string_to_copy){
 
 const char * MyString::c_str(){
 	//TODO Alix
-    char* result = new char[this->length() + 1];
-    result(this);  //ça je sais pas comment faire 
+    char* result = new char[this->length()+1]; //je ne sais pas si c'est +1 ou pas 
+    for(int i=0; i<this->length();i++){
+        result[i]=_char_array[i];
+    }
     result[this->length()] = '\0';
     return result;
 }
 
 size_t MyString::size() const{
 	//TODO Alix
-	int len = 0;
-	while (_char_array[len]!='\0'){
-		len++;
-	}
-	return len;
+	return this->length();
 }
 
 size_t MyString::length() const{
@@ -164,11 +162,13 @@ MyString MyString::operator+(const MyString& str){
 
 MyString MyString::operator+(const char * str){
 	//TODO Alix
+	MyString renv; 
+	int _length = length();
 	int str_size = 0;
 	while(str[str_size]!='\0') {
 	    str_size++;
 	}
-	int new_size = this->length() + str_size ;
+	int new_size = _length + str_size ;
 	if(_alloc_size < new_size + 1){
 		int target_alloc = _alloc_size;
 		do{
@@ -176,10 +176,16 @@ MyString MyString::operator+(const char * str){
 		}while(target_alloc < new_size + 1);
 		reserve(target_alloc);
 	}
-	for(int i=this->length(); i<new_size; i++){
-		_char_array[i] = str[i];
+	for(int i=0; i<_length; i++){
+		renv._char_array[i] = _char_array[i];
 	}
-	_char_array[new_size] = '\0';
+	for (int j=_length; j<new_size; j++){
+	    for(int g=0, g<str_size; g++){
+	        renv._char_array[j] = str[g];
+	    }
+	}
+	renv._char_array[new_size] = '\0';
+	return renv; 
 }
 
 MyString MyString::operator+(const char str){
