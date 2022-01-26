@@ -13,7 +13,6 @@ MyString::MyString(char * char_array){
 	int len = 0;
 	while(char_array[len]!='\0') len++;
 	reserve(len);
-	_alloc_size=len;
 	_max_size=100;
 	for (int i = 0; i<len+1 ; i++){
 		_char_array[i]=char_array[i];
