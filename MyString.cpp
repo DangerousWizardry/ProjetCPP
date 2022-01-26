@@ -13,7 +13,7 @@ MyString::MyString(char * char_array){
 	int len = 0;
 	while(char_array[len]!='\0') len++;
 	reserve(len);
-	_alloc_size=capacity();
+	_alloc_size=len;
 	_max_size=100;
 	for (int i = 0; i<len+1 ; i++){
 		_char_array[i]=char_array[i];
@@ -37,7 +37,7 @@ MyString::MyString(const MyString& string_to_copy){
 
 const char * MyString::c_str(){
 	//TODO Alix
-    char* result = new char[this->length()+1]; //je ne sais pas si c'est +1 ou pas 
+    char* result = new char[this->length()+1]; //je ne sais pas si c'est +1 ou pas
     for(int i=0; i<this->length();i++){
         result[i]=_char_array[i];
     }
@@ -162,7 +162,7 @@ MyString MyString::operator+(const MyString& str){
 
 MyString MyString::operator+(const char * str){
 	//TODO Alix
-	MyString renv; 
+	MyString renv;
 	int _length = length();
 	int str_size = 0;
 	while(str[str_size]!='\0') {
@@ -185,7 +185,7 @@ MyString MyString::operator+(const char * str){
 	    }
 	}
 	renv._char_array[new_size] = '\0';
-	return renv; 
+	return renv;
 }
 
 MyString MyString::operator+(const char str){
