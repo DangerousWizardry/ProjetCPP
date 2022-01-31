@@ -1,6 +1,7 @@
 #include <cctype>
 #include <string>
 #include <iostream>
+#include <stdexcept>
 
 class MyString
 {
@@ -24,9 +25,9 @@ public:
 	MyString operator+(const MyString&);
 	MyString operator+(const char *);
 	MyString operator+(const char);
-	//TO PROTECT, HERE FOR TESTING PURPOSE
-	char * _char_array;
+	
 protected:
-	int _max_size;
+	const static int _max_size;
 	int _alloc_size;
+	char * _char_array;
 };

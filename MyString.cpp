@@ -1,8 +1,9 @@
 #include "MyString.h"
 
+const int MyString::_max_size = 100;
+
 MyString::MyString(){
 	//TODO Lucas
-	_max_size = 100;
 	_alloc_size = 4;
 	_char_array = new char[_alloc_size];
 	_char_array[0] = '\0';
@@ -10,10 +11,14 @@ MyString::MyString(){
 
 MyString::MyString(char * char_array){
 	//TODO Léa
+	_alloc_size = 4;
+	_char_array = new char[_alloc_size];
+	_char_array[0] = '\0';
 	int len = 0;
 	while(char_array[len]!='\0') len++;
+	if(len > _max_size)
+		throw std::length_error("MyString size exceed max size ! Try to build a smaller MyString object.");
 	reserve(len);
-	_max_size=100;
 	for (int i = 0; i<len+1 ; i++){
 		_char_array[i]=char_array[i];
 	}
@@ -27,16 +32,19 @@ MyString::~MyString(){
 MyString::MyString(const MyString& string_to_copy){
 	//TODO Alix
 	int len = string_to_copy.length();
+	if(len > _max_size)
+		throw std::length_error("MyString size exceed max size ! Try to build a smaller MyString object.");
 	_char_array = new char[len+1];
+	_alloc_size = len+1;
 	for (int i = 0; i<len+1; i++){
-	    _char_array[i]=string_to_copy[i];
+	    _char_array[i] = string_to_copy._char_array[i];
 	}
 	_char_array[len]='\0';
 }
 
 const char * MyString::c_str(){
 	//TODO Alix
-    char* result = new char[this->length()+1]; //je ne sais pas si c'est +1 ou pas
+    char* result = new char[this->length()+1]; 
     for(int i=0; i<this->length();i++){
         result[i]=_char_array[i];
     }
@@ -78,6 +86,8 @@ bool MyString::empty(){
 
 void MyString::resize(int new_size, char c){
 	//TODO Léa
+	if(new_size > _max_size)
+		throw std::length_error("MyString size exceed max size ! Try to build a smaller MyString object.");
 	int str_size = this->length();
 	reserve(new_size);
 	if (new_size>str_size){
@@ -89,6 +99,7 @@ void MyString::resize(int new_size, char c){
 
 void MyString::reserve(size_t n){
 	//TODO Lucas
+	if(n > _max_size) n = _max_size;
 	int str_size = this->length();
 	if(n>str_size){
 		char * new_array = new char[n];
@@ -101,25 +112,27 @@ void MyString::reserve(size_t n){
 		_alloc_size = n;
 	}
 	else{
-		//Throw Error
-		std::cout << "You're trying to allocate a lower amount of memory than the amount needed to store the current string" << std::endl;
+		throw std::length_error("You're trying to allocate a lower amount of memory than the amount needed to store the current string");
 	}
 }
 
 MyString& MyString::operator=(const MyString& str){
 	//TODO Léa
 	int len = str.length();
+	if(len > _max_size)
+		throw std::length_error("MyString size exceed max size ! Try to build a smaller MyString object.");
 	reserve(str._alloc_size); //reserve(len)   ???
 	for (int i=0; i<len+1; i++){
 		_char_array[i] = str._char_array[i];
-	} //return _char_array ?? ou alors c'est pas obligé vu que c'est un objet de type MyString
-	//return *this; ???
+	} 
 }
 
 MyString& MyString::operator=(const char * str){
 	//TODO Lucas
 	int new_str_size = 0;
 	while(str[new_str_size]!='\0') new_str_size++;
+	if(new_str_size > _max_size)
+		throw std::length_error("MyString size exceed max size ! Try to build a smaller MyString object.");
 	if(_alloc_size < new_str_size + 1){
 		int target_alloc = _alloc_size;
 		do{
@@ -144,10 +157,12 @@ MyString MyString::operator+(const MyString& str){
 	MyString temp;
 	int current_length = length();
 	int target_length = current_length + str.length();
+	if(target_length > _max_size)
+		throw std::length_error("MyString size exceed max size ! Try to build a smaller MyString object.");
 	int target_alloc = _alloc_size;
 	do{
 			target_alloc*=2;
-	}while(target_alloc<target_length+1);
+	}while(target_alloc < target_length+1);
 	temp.reserve(target_alloc);
 	for(int i=0; i<current_length;i++){
 		temp._char_array[i] = _char_array[i];
@@ -161,27 +176,27 @@ MyString MyString::operator+(const MyString& str){
 
 MyString MyString::operator+(const char * str){
 	//TODO Alix
-	MyString renv;
-	int _length = length();
+	MyString renv = MyString();
+	int current_length = length();
 	int str_size = 0;
 	while(str[str_size]!='\0') {
 	    str_size++;
 	}
-	int new_size = _length + str_size ;
-	if(_alloc_size < new_size + 1){
-		int target_alloc = _alloc_size;
+	int new_size = current_length + str_size ;
+	if(new_size > _max_size)
+		throw std::length_error("MyString size exceed max size ! Try to build a smaller MyString object.");
+	int target_alloc = _alloc_size;
+	if(target_alloc < new_size + 1){
 		do{
 			target_alloc*=2;
 		}while(target_alloc < new_size + 1);
-		reserve(target_alloc);
 	}
-	for(int i=0; i<_length; i++){
+	renv.reserve(target_alloc);
+	for(int i=0; i<current_length; i++){
 		renv._char_array[i] = _char_array[i];
 	}
-	for (int j=_length; j<new_size; j++){
-	    for(int g=0, g<str_size; g++){
-	        renv._char_array[j] = str[g];
-	    }
+	for (int j=current_length; j<new_size; j++){
+	    renv._char_array[j] = str[j-current_length];
 	}
 	renv._char_array[new_size] = '\0';
 	return renv;
@@ -189,9 +204,15 @@ MyString MyString::operator+(const char * str){
 
 MyString MyString::operator+(const char str){
 	//TODO Léa
-	if (_alloc_size < length()+1) {
-		reserve(length()+1);
-	}
-	_char_array[length()] = str;
-	_char_array[length()+1] = '\0';
+	MyString temp;
+	int new_size = length() + 1;
+	if(new_size > _max_size)
+		throw std::length_error("MyString size exceed max size ! Try to build a smaller MyString object.");
+	temp.reserve(new_size + 1);
+	for (int i=0; i<new_size-1; i++){
+		temp._char_array[i] = _char_array[i];
+	} 
+	temp._char_array[new_size] = str;
+	temp._char_array[new_size+1] = '\0';
+	return temp;
 }
